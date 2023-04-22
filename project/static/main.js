@@ -4,7 +4,6 @@ function getCookie(name) {
         const cookies = document.cookie.split(";");
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === (name + "=")) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
@@ -72,7 +71,8 @@ function getAllProducts(url) {
                                 <h5 class="mb-0">$499.00</h5>
                             </div>
                             <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                <a role="button" class="text-danger"><i class="fas fa-xmark fa-lg"></i></i></a>
+                            <!-- <button id="x-button-delete" product-id="${product.id}" class="btn btn-primary">asdasd</button> -->
+                                <a id="x-button-delete" product-id="${product.id}" role="button" class="text-danger"><i class="fas fa-xmark fa-lg"></i></i></a>
                             </div>
                         </div>
                     </div>

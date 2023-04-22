@@ -6,16 +6,22 @@ from .models import Product
 # from .forms import ProductForm
 
 def index(request):
-    products = Product.objects.all()
     # product_form = ProductForm(request.POST or None)
     # if request.method == "POST":
     #     if product_form.is_valid():
     #         product_form.save()
     context = {
-        'products': products,
         # 'product_form': product_form,
     }
     return render(request, 'app/index.html', context)
+
+
+def manager(request):
+    products = Product.objects.all()
+    context = {
+        'products': products,
+    }
+    return render(request, 'app/manager.html', context)
 
 
 def product(request):
@@ -28,7 +34,7 @@ def product(request):
         if request.method == "POST":
             data = json.load(request)
             product = data.get('payload')
-            Product.objects.create(product_name=product['name'], quantity=product['quantity'])
+            Product.objects.create(product_name=product['product_name'], quantity=product['quantity'])
             return JsonResponse({'status': 'Product added.'})
         return JsonResponse({'status': 'Invalid request'}, status=400)
     else:

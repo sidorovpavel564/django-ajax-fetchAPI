@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-	<div class="container-fluid" >
+	<div class="container-fluid">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item active" aria-current="page">Forms</li>
+				<li class="breadcrumb-item"><a href="{% url 'management' %}">Product management</a></li>
+			</ol>
+		</nav>
+
 		<div class="row">
 			<div class="col-md">
 				<!-- GET button -->
@@ -99,6 +106,7 @@
 
 			// GET all products
 			const readButton = document.getElementById("getProducts")
+			console.log(readButton)
 			readButton.addEventListener("click", () => {
 				getAllProducts(productsUrl);
 			});
@@ -108,7 +116,7 @@
 			addProductForm.addEventListener("submit", (e) => {
 				e.preventDefault();
 				const formData = {
-					name: addProductForm.elements["productNamePost"].value,
+					product_name: addProductForm.elements["productNamePost"].value,
 					quantity: addProductForm.elements["productQuantityPost"].value,
 				}
 				addProduct(productsUrl, formData);
