@@ -18,18 +18,18 @@
 								class="img-fluid rounded-3" alt="Cotton T-shirt">
 						</div>
 						<div class="col-md-3 col-lg-3 col-xl-3">
-							<p class="lead fw-normal mb-2">{{product.product_name}}</p>
+							<p id="product-name" product-name="{{product.product_name}}" class="lead fw-normal mb-2">{{product.product_name}}</p>
 							<p><span class="text-muted">Size: </span>M <span class="text-muted">Color: </span>Grey</p>
 						</div>
 						<div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-							<button class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+							<button id="decrement-button" product-id="{{product.id}}" class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
 								<i class="fas fa-minus"></i>
 							</button>
 	
-							<input id="form1" min="0" name="quantity" value="{{product.quantity}}" type="number"
+							<input min="0" name="quantity" value="{{product.quantity}}" type="number"
 								class="form-control form-control-sm" />
 	
-							<button class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+							<button id="increment-button" product-id="{{product.id}}" class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
 								<i class="fas fa-plus"></i>
 							</button>
 						</div>
@@ -37,7 +37,6 @@
 							<h5 class="mb-0">$499.00</h5>
 						</div>
 						<div class="col-md-1 col-lg-1 col-xl-1 text-end">
-							<!-- <button id="x-button-delete" product-id="${product.id}" class="btn btn-primary">asdasd</button> -->
 							<a id="x-button-delete" product-id="{{product.id}}" role="button" class="text-danger"><i
 									class="fas fa-xmark fa-lg"></i></i></a>
 						</div>
@@ -52,15 +51,52 @@
 {% block javascript %}
 <script>
 	(function () {
+		console.log("ready")
+
 		// x-button-DELETE
 		const xButtons = document.querySelectorAll("#x-button-delete");
-		console.log(xButtons);
 		xButtons.forEach((xButton) => {
 			const productId = xButton.getAttribute("product-id");
+			const productCard = xButton.closest(".card");
 			xButton.addEventListener("click", (e) => {
 				e.preventDefault();
 				const deleteUrl = `/put_delete_product/${productId}`;
 				deleteProduct(deleteUrl);
+				productCard.remove();
+			});
+		});
+
+		// PUT increase-quantity-button
+		const incrementButtons = document.querySelectorAll("#increment-button");
+		incrementButtons.forEach((incrementButton) => {
+			incrementButton.addEventListener("click", (e) => {
+				e.preventDefault();
+				const productId = incrementButton.getAttribute("product-id");
+				const quantityElement = incrementButton.parentElement.querySelector(".form-control");
+				const productName = document.querySelector("#product-name");
+				const formData = {
+					product_name: productName.getAttribute("product-name"),
+					quantity: parseInt(quantityElement.getAttribute("value")) + 1,
+				}
+				const putUrl = `/put_delete_product/${productId}`;
+				updateProduct(putUrl, formData);
+			});
+		});
+
+		// PUT decrease-quantity-button
+		const decrementButtons = document.querySelectorAll("#decrement-button");
+		decrementButtons.forEach((decrementButton) => {
+			decrementButton.addEventListener("click", (e) => {
+				e.preventDefault();
+				const productId = decrementButton.getAttribute("product-id");
+				const quantityElement = decrementButton.parentElement.querySelector(".form-control");
+				const productName = document.querySelector("#product-name");
+				const formData = {
+					product_name: productName.getAttribute("product-name"),
+					quantity: parseInt(quantityElement.getAttribute("value")) - 1,
+				}
+				const putUrl = `/put_delete_product/${productId}`;
+				updateProduct(putUrl, formData);
 			});
 		});
 	})();
