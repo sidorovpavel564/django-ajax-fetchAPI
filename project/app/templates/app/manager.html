@@ -13,28 +13,21 @@
 			<div class="card rounded-3 shadow-5 mb-4">
 				<div class="card-body p-4">
 					<div class="row d-flex justify-content-between align-items-center">
-						<div class="col-md-2 col-lg-2 col-xl-2">
-							<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img1.webp"
-								class="img-fluid rounded-3" alt="Cotton T-shirt">
-						</div>
-						<div class="col-md-3 col-lg-3 col-xl-3">
-							<p id="product-name" product-name="{{product.product_name}}" class="lead fw-normal mb-2">{{product.product_name}}</p>
-							<p><span class="text-muted">Size: </span>M <span class="text-muted">Color: </span>Grey</p>
+						<div class="col-md-2">
+							<p id="product-name" productName="{{product.product_name}}" class="lead fw-normal mb-2">{{product.product_name}}</p>
 						</div>
 						<div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-							<button id="decrement-button" product-id="{{product.id}}" class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+							<button id="change-quantity" product-id="{{product.id}}" class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
 								<i class="fas fa-minus"></i>
 							</button>
 	
 							<input min="0" name="quantity" value="{{product.quantity}}" type="number"
-								class="form-control form-control-sm" />
+								class="form-control form-control-sm"
+							/>
 	
-							<button id="increment-button" product-id="{{product.id}}" class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+							<button id="change-quantity" product-id="{{product.id}}" class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
 								<i class="fas fa-plus"></i>
 							</button>
-						</div>
-						<div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-							<h5 class="mb-0">$499.00</h5>
 						</div>
 						<div class="col-md-1 col-lg-1 col-xl-1 text-end">
 							<a id="x-button-delete" product-id="{{product.id}}" role="button" class="text-danger"><i
@@ -56,47 +49,31 @@
 		// x-button-DELETE
 		const xButtons = document.querySelectorAll("#x-button-delete");
 		xButtons.forEach((xButton) => {
-			const productId = xButton.getAttribute("product-id");
+			const product_id = xButton.getAttribute("product-id");
 			const productCard = xButton.closest(".card");
 			xButton.addEventListener("click", (e) => {
 				e.preventDefault();
-				const deleteUrl = `/put_delete_product/${productId}`;
+				const deleteUrl = `/put_delete_product/${product_id}`;
 				deleteProduct(deleteUrl);
 				productCard.remove();
 			});
 		});
 
-		// PUT increase-quantity-button
-		const incrementButtons = document.querySelectorAll("#increment-button");
-		incrementButtons.forEach((incrementButton) => {
-			incrementButton.addEventListener("click", (e) => {
+		// PUT change-quantity-button
+		const changeQuantityButtons = document.querySelectorAll("#change-quantity");
+		changeQuantityButtons.forEach((changeQuantityButton) => {
+			changeQuantityButton.addEventListener("click", (e) => {
 				e.preventDefault();
-				const productId = incrementButton.getAttribute("product-id");
-				const quantityElement = incrementButton.parentElement.querySelector(".form-control");
-				const productName = document.querySelector("#product-name");
+				const product_id = changeQuantityButton.getAttribute("product-id");
+				var product_qty = changeQuantityButton.parentElement.querySelector(".form-control").value;
+				var product_name = changeQuantityButton.closest(".card-body").querySelector("#product-name").getAttribute('productName');
 				const formData = {
-					product_name: productName.getAttribute("product-name"),
-					quantity: parseInt(quantityElement.getAttribute("value")) + 1,
+					product_name: product_name,
+					quantity: product_qty,
 				}
-				const putUrl = `/put_delete_product/${productId}`;
+				const putUrl = `/put_delete_product/${product_id}`;
 				updateProduct(putUrl, formData);
-			});
-		});
-
-		// PUT decrease-quantity-button
-		const decrementButtons = document.querySelectorAll("#decrement-button");
-		decrementButtons.forEach((decrementButton) => {
-			decrementButton.addEventListener("click", (e) => {
-				e.preventDefault();
-				const productId = decrementButton.getAttribute("product-id");
-				const quantityElement = decrementButton.parentElement.querySelector(".form-control");
-				const productName = document.querySelector("#product-name");
-				const formData = {
-					product_name: productName.getAttribute("product-name"),
-					quantity: parseInt(quantityElement.getAttribute("value")) - 1,
-				}
-				const putUrl = `/put_delete_product/${productId}`;
-				updateProduct(putUrl, formData);
+				console.log(formData);
 			});
 		});
 	})();

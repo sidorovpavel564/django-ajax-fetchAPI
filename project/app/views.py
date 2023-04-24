@@ -50,7 +50,7 @@ def put_delete_product(request, product_id):
         if request.method == 'PUT':
             data = json.load(request)
             updated_values = data.get('payload')
-
+            
             product.product_name = updated_values['product_name']
             product.quantity = updated_values['quantity']
             product.save()
