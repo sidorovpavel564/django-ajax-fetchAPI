@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from .models import Product
 # from .forms import ProductForm
 
+
 def index(request):
     # product_form = ProductForm(request.POST or None)
     # if request.method == "POST":
@@ -34,7 +35,8 @@ def product(request):
         if request.method == "POST":
             data = json.load(request)
             product = data.get('payload')
-            Product.objects.create(product_name=product['product_name'], quantity=product['quantity'])
+            Product.objects.create(
+                product_name=product['product_name'], quantity=product['quantity'])
             return JsonResponse({'status': 'Product added.'})
         return JsonResponse({'status': 'Invalid request'}, status=400)
     else:
@@ -50,13 +52,13 @@ def put_delete_product(request, product_id):
         if request.method == 'PUT':
             data = json.load(request)
             updated_values = data.get('payload')
-            
+
             product.product_name = updated_values['product_name']
             product.quantity = updated_values['quantity']
             product.save()
 
             return JsonResponse({'status': 'Product updated.'})
-        
+
         if request.method == 'DELETE':
             product.delete()
             return JsonResponse({'status': 'Product deleted.'})
