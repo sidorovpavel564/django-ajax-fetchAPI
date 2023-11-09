@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<div class="container-fluid">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item active" aria-current="page">Forms</li>
+				<li class="breadcrumb-item"><a href="{% url 'management' %}">Product management</a></li>
+			</ol>
+		</nav>
+
+		<div class="row">
+			<div class="col-md">
+				<!-- GET button -->
+				<div class="d-inline-flex">
+					<button id="getProducts" class="btn btn-primary btn-lg mb-3">GET products</button>
+				</div>
+				<!-- Products list -->
+				<table id="productList" class="table"></table>
+			</div>
+			<div class="col-md-5">
+				<!-- POST -->
+				<div class="card shadow-5 mb-3">
+					<div class="card-body">
+						<h5 class="card-title">POST</h5>
+						<!-- Form -->
+						<div class="col-md-5">
+							<form id="addProductForm" method="POST">
+								{% csrf_token %}
+								<!-- Product name input -->
+								<div class="form-outline mb-3">
+									<input type="text" id="productNamePost" class="form-control" required />
+									<label class="form-label" for="productNamePost">Product name (required)</label>
+								</div>
+								<!-- Product quantity input -->
+								<div class="form-outline mb-3">
+									<input type="number" id="productQuantityPost" class="form-control" required />
+									<label class="form-label" for="productQuantityPost">Product quantity (required)</label>
+								</div>
+								<!-- Submit button -->
+								<button type="submit" class="btn btn-primary">Add product</button>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<!-- PUT -->
+				<div class="card shadow-5 mb-3">
+					<div class="card-body">
+						<h5 class="card-title">PUT (change <text class="font-monospace">product_name</text> and <text class="font-monospace">quantity</text> by <text class="font-monospace">pk</text> (Product ID))</h5>
+						<!-- Form -->
+						<div class="col-md-5">
+							<form id="updateProductForm" method="PUT">
+								{% csrf_token %}
+								<!-- Product ID input -->
+								<div class="form-outline mb-3">
+									<input type="text" id="productIDPut" class="form-control" required />
+									<label class="form-label" for="productIDPut">Product ID (required)</label>
+								</div>
+								<!-- Product name input -->
+								<div class="form-outline mb-3">
+									<input type="text" id="productNamePut" class="form-control" required />
+									<label class="form-label" for="productNamePut">Product name (required)</label>
+								</div>
+								<!-- Product quantity input -->
+								<div class="form-outline mb-3">
+									<input type="number" id="productQuantityPut" class="form-control" required />
+									<label class="form-label" for="productQuantityPut">Product quantity (required)</label>
+								</div>
+								<!-- Submit button -->
+								<button type="submit" class="btn btn-primary">Change product info</button>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<!-- DELETE -->
+				<div class="card shadow-5">
+					<div class="card-body">
+						<h5 class="card-title">DELETE (by <text class="font-monospace">pk</text>)</h5>
+						<!-- Form -->
+						<div class="col-md-5">
+							<form id="deleteProductForm" method="DELETE">
+								{% csrf_token %}
+								<!-- Product ID input -->
+								<div class="form-outline mb-3">
+									<input type="text" id="productIDDelete" class="form-control" required />
+									<label class="form-label" for="productIDDelete">Product ID (required)</label>
+								</div>
+								<button type="submit" class="btn btn-primary">Delete product</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascript %}
+	<script>
+		(function() {
+			console.log("ready")
+
+			productsUrl = "{% url 'product' %}"
+
+			// GET all products
+			const readButton = document.getElementById("getProducts")
+			readButton.addEventListener("click", () => {
+				getAllProducts(productsUrl);
+			});
+
+			// POST product
+			const addProductForm = document.getElementById("addProductForm");
+			addProductForm.addEventListener("submit", (e) => {
+				e.preventDefault();
+				const formData = {
+					product_name: addProductForm.elements["productNamePost"].value,
+					quantity: addProductForm.elements["productQuantityPost"].value,
+				}
+				addProduct(productsUrl, formData);
+				addProductForm.reset();
+			});
+
+			// PUT
+			const updateProductForm = document.getElementById("updateProductForm");
+			updateProductForm.addEventListener("submit", (e) => {
+				e.preventDefault();
+				const formData = {
+					product_name: updateProductForm.elements["productNamePut"].value,
+					quantity: updateProductForm.elements["productQuantityPut"].value,
+				}
+				const product_id = updateProductForm.elements["productIDPut"].value;
+				const putUrl = `/put_delete_product/${product_id}`;
+				updateProduct(putUrl, formData);
+				updateProductForm.reset();
+			});
+
+			// DELETE
+			const deleteProductForm = document.getElementById("deleteProductForm");
+			deleteProductForm.addEventListener("submit", (e) => {
+				e.preventDefault();
+				const product_id = deleteProductForm.elements["productIDDelete"].value;
+				const deleteUrl = `/put_delete_product/${product_id}`;
+				deleteProduct(deleteUrl);
+				deleteProductForm.reset();
+			});
+		})();
+	</script>
+{% endblock %}

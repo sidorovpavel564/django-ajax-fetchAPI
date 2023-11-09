@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="{% url 'index' %}">Forms</a></li>
+			<li class="breadcrumb-item active" aria-current="page">Product management</li>
+		</ol>
+	</nav>
+	{% for product in products %}
+		<div class="col-md-7">
+			<div class="card rounded-3 shadow-5 mb-4">
+				<div class="card-body p-4">
+					<div class="row d-flex justify-content-between align-items-center">
+						<div class="col-md-2">
+							<p id="product-name" productName="{{product.product_name}}" class="lead fw-normal mb-2">{{product.product_name}}</p>
+						</div>
+						<div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+							<button id="change-quantity" product-id="{{product.id}}" class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+								<i class="fas fa-minus"></i>
+							</button>
+	
+							<input min="0" name="quantity" value="{{product.quantity}}" type="number"
+								class="form-control form-control-sm"
+							/>
+	
+							<button id="change-quantity" product-id="{{product.id}}" class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+								<i class="fas fa-plus"></i>
+							</button>
+						</div>
+						<div class="col-md-1 col-lg-1 col-xl-1 text-end">
+							<a id="x-button-delete" product-id="{{product.id}}" role="button" class="text-danger"><i
+									class="fas fa-xmark fa-lg"></i></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+	(function () {
+		console.log("ready")
+
+		// x-button-DELETE
+		const xButtons = document.querySelectorAll("#x-button-delete");
+		xButtons.forEach((xButton) => {
+			const product_id = xButton.getAttribute("product-id");
+			const productCard = xButton.closest(".card");
+			xButton.addEventListener("click", (e) => {
+				e.preventDefault();
+				const deleteUrl = `/put_delete_product/${product_id}`;
+				deleteProduct(deleteUrl);
+				productCard.remove();
+			});
+		});
+
+		// PUT change-quantity-button
+		const changeQuantityButtons = document.querySelectorAll("#change-quantity");
+		changeQuantityButtons.forEach((changeQuantityButton) => {
+			changeQuantityButton.addEventListener("click", (e) => {
+				e.preventDefault();
+				const product_id = changeQuantityButton.getAttribute("product-id");
+				var product_qty = changeQuantityButton.parentElement.querySelector(".form-control").value;
+				var product_name = changeQuantityButton.closest(".card-body").querySelector("#product-name").getAttribute('productName');
+				const formData = {
+					product_name: product_name,
+					quantity: product_qty,
+				}
+				const putUrl = `/put_delete_product/${product_id}`;
+				updateProduct(putUrl, formData);
+				console.log(formData);
+			});
+		});
+	})();
+</script>
+{% endblock %}
